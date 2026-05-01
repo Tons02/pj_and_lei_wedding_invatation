@@ -235,10 +235,17 @@ const styles = `
     }
   }
 
-  @media (max-width: 425px) {
-  .hero__bg {
-    background-position: 70% 20%;
-  }
+    @media (max-width: 768px) {
+    .hero__bg {
+        background-position: 90% 20%;
+    }
+    }
+
+    @media (max-width: 425px) {
+    .hero__bg {
+        background-position: 70% 20%;
+    }
+    }
 }
 `;
 
