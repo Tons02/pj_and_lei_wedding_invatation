@@ -235,7 +235,13 @@ const styles = `
     }
   }
 
-    @media (max-width: 768px) {
+    @media (max-width: 1440px) {
+    .hero__bg {
+        background-position: 100% 20%;
+    }
+    }
+
+    @media (max-width: 1024px) {
     .hero__bg {
         background-position: 90% 20%;
     }
