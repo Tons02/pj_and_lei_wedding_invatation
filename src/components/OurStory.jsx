@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
-import storyImg1 from "../assets/our_story.jpg";
-import storyImg2 from "../assets/our_story_1.jpg";
+import storyImg1 from "../assets/FirstOurStory.jpg";
+import storyImg2 from "../assets/SecondOurStory.jpg";
 
 const stories = [
   {
