@@ -579,7 +579,7 @@ export default function RSVP() {
               <canvas
                 ref={canvasRef}
                 className="rsvp__qr-canvas"
-                aria-label="QR code linking to RSVP form for Lhei and PJ's wedding"
+                aria-label="QR code linking to RSVP form for Lei and PJ's wedding"
               />
 
               <div className="rsvp__qr-divider">
@@ -587,7 +587,7 @@ export default function RSVP() {
                 <i />
                 <span />
               </div>
-              <p className="rsvp__qr-names">Lhei &amp; PJ</p>
+              <p className="rsvp__qr-names">Lei &amp; PJ</p>
               <p className="rsvp__qr-sub">July 5, 2026 · Shepherd's Palace</p>
             </div>
 
