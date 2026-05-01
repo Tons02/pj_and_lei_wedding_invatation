@@ -452,7 +452,7 @@ export default function EventDetails() {
     <>
       <style>{styles}</style>
 
-      <section id="event-details" className="event">
+      <section id="event" className="event">
         <div className="event__bg-text" aria-hidden="true">
           July
         </div>

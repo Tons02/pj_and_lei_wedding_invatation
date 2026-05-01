@@ -254,7 +254,7 @@ export default function Hero() {
     <>
       <style>{styles}</style>
 
-      <section className="hero">
+      <section className="hero" id="home">
         <div
           className="hero__bg"
           style={{ backgroundImage: `url(${BannerImage})` }}
