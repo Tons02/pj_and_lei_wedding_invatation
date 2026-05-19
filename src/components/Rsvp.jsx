@@ -1,8 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
 
-const FORM_URL =
-  "https://docs.google.com/forms/d/e/1FAIpQLSe-nzuZfOUYwmgv91vw9FDtv9-dyEviQdzqEdUBt_IR_stEng/viewform?usp=publish-editor";
+// Google Form identifiers
+const FORM_ACTION =
+  "https://docs.google.com/forms/d/e/1FAIpQLSfQBlruW3zH5DaTUhlZDIL9kp1awzLIXsGhyTj3T3sk9zFGcw/formResponse";
+const ENTRY_NAME = "entry.188293430"; // Name field
+const ENTRY_ATTEND = "entry.1512758678"; // Attendance field
+const YES_VALUE = "Yes, I'll be there.";
+const NO_VALUE = "Sorry, can't make it.";
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Montserrat:wght@300;400;500&display=swap');
@@ -222,43 +227,8 @@ const styles = `
     line-height: 1;
   }
 
-  /* ─── CTA button ──────────────────────────────────────── */
-  .rsvp__btn-wrap {
-    display: flex;
-    justify-content: center;
-  }
-
-  @media (min-width: 860px) {
-    .rsvp__btn-wrap { justify-content: flex-start; }
-  }
-
-  .rsvp__btn {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 400;
-    font-size: clamp(0.6rem, 2vw, 0.68rem);
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: #1a1612;
-    background: rgba(210, 185, 140, 0.92);
-    border: none;
-    padding: clamp(0.85rem, 2.5vw, 1rem) clamp(2rem, 6vw, 3rem);
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    transition: background 0.3s ease, transform 0.2s ease, letter-spacing 0.3s ease;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .rsvp__btn:hover {
-    background: rgba(235, 215, 170, 1);
-    transform: translateY(-2px);
-    letter-spacing: 0.38em;
-  }
-
-  .rsvp__btn:active { transform: translateY(0); }
-
-  /* ─── QR card block ───────────────────────────────────── */
-  .rsvp__qr-wrap {
+  /* ─── Inline Form Card ────────────────────────────────── */
+  .rsvp__form-wrap {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -269,25 +239,25 @@ const styles = `
   }
 
   @media (min-width: 860px) {
-    .rsvp__qr-wrap {
+    .rsvp__form-wrap {
       transform: translateX(28px);
     }
   }
 
-  .rsvp__qr-card {
+  .rsvp__form-card {
     position: relative;
     background: #faf8f4;
-    padding: clamp(1.6rem, 5vw, 2.8rem);
+    padding: clamp(1.6rem, 5vw, 2.4rem);
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     gap: 1.2rem;
     width: 100%;
-    max-width: clamp(260px, 80vw, 320px);
+    max-width: clamp(260px, 80vw, 340px);
   }
 
   /* Offset shadow */
-  .rsvp__qr-card::before {
+  .rsvp__form-card::before {
     content: '';
     position: absolute;
     inset: -8px;
@@ -297,7 +267,7 @@ const styles = `
   }
 
   /* Border */
-  .rsvp__qr-card::after {
+  .rsvp__form-card::after {
     content: '';
     position: absolute;
     inset: 0;
@@ -306,7 +276,7 @@ const styles = `
   }
 
   /* Corner brackets */
-  .rsvp__qr-corner {
+  .rsvp__form-corner {
     position: absolute;
     width: 14px;
     height: 14px;
@@ -314,34 +284,22 @@ const styles = `
     border-style: solid;
   }
 
-  .rsvp__qr-corner--tl { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
-  .rsvp__qr-corner--tr { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
-  .rsvp__qr-corner--bl { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
-  .rsvp__qr-corner--br { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+  .rsvp__form-corner--tl { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+  .rsvp__form-corner--tr { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
+  .rsvp__form-corner--bl { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
+  .rsvp__form-corner--br { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
 
-  .rsvp__qr-eyebrow {
+  .rsvp__form-eyebrow {
     font-family: 'Montserrat', sans-serif;
     font-weight: 300;
     font-size: clamp(0.52rem, 1.5vw, 0.58rem);
     letter-spacing: 0.3em;
     color: rgba(107, 21, 37, 0.6);
     text-transform: uppercase;
+    text-align: center;
   }
 
-  /* Canvas: fluid size on mobile, fixed on desktop */
-  .rsvp__qr-canvas {
-    display: block;
-    width: clamp(150px, 50vw, 200px) !important;
-    height: clamp(150px, 50vw, 200px) !important;
-    animation: qrPulse 4s ease-in-out infinite 2s;
-  }
-
-  @keyframes qrPulse {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: 0.82; }
-  }
-
-  .rsvp__qr-names {
+  .rsvp__form-names {
     font-family: 'Cormorant Garamond', serif;
     font-weight: 300;
     font-style: italic;
@@ -352,7 +310,7 @@ const styles = `
     margin: 0;
   }
 
-  .rsvp__qr-sub {
+  .rsvp__form-sub {
     font-family: 'Montserrat', sans-serif;
     font-weight: 300;
     font-size: clamp(0.5rem, 1.5vw, 0.58rem);
@@ -362,20 +320,20 @@ const styles = `
     text-transform: uppercase;
   }
 
-  .rsvp__qr-divider {
+  .rsvp__form-divider {
     width: 100%;
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
 
-  .rsvp__qr-divider span {
+  .rsvp__form-divider span {
     flex: 1;
     height: 0.5px;
     background: rgba(107, 21, 37, 0.13);
   }
 
-  .rsvp__qr-divider i {
+  .rsvp__form-divider i {
     width: 4px;
     height: 4px;
     background: rgba(107, 21, 37, 0.22);
@@ -383,49 +341,202 @@ const styles = `
     flex-shrink: 0;
   }
 
-  /* ─── Scan hint ───────────────────────────────────────── */
-  .rsvp__scan-hint {
-    margin-top: 1.4rem;
+  /* ─── Form fields ─────────────────────────────────────── */
+  .rsvp__field {
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: 0.4rem;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: opacity 0.8s ease 0.8s, transform 0.8s ease 0.8s;
   }
 
-  .rsvp__scan-label {
+  .rsvp__label {
     font-family: 'Montserrat', sans-serif;
     font-weight: 300;
-    font-size: clamp(0.5rem, 1.5vw, 0.55rem);
-    letter-spacing: 0.28em;
-    color: rgba(210, 185, 140, 0.35);
+    font-size: 0.55rem;
+    letter-spacing: 0.25em;
+    color: rgba(60, 48, 30, 0.5);
     text-transform: uppercase;
   }
 
-  .rsvp__scan-line {
-    width: 0.5px;
-    height: 28px;
-    background: rgba(210, 185, 140, 0.2);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .rsvp__scan-line::after {
-    content: '';
-    position: absolute;
-    top: -100%;
-    left: 0;
+  .rsvp__input {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-weight: 300;
+    color: #2c2418;
+    background: transparent;
+    border: none;
+    border-bottom: 0.5px solid rgba(107, 21, 37, 0.2);
+    padding: 0.4rem 0;
+    outline: none;
     width: 100%;
-    height: 100%;
-    background: rgba(210, 185, 140, 0.65);
-    animation: scanDrop 2.2s ease-in-out infinite 1.5s;
+    transition: border-color 0.3s ease;
   }
 
-  @keyframes scanDrop {
-    0%   { top: -100%; }
-    100% { top: 100%; }
+  .rsvp__input::placeholder {
+    color: rgba(60, 48, 30, 0.25);
+    font-style: italic;
+  }
+
+  .rsvp__input:focus {
+    border-bottom-color: rgba(107, 21, 37, 0.55);
+  }
+
+  /* ─── Attendance toggle ───────────────────────────────── */
+  .rsvp__attend-group {
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  .rsvp__attend-option {
+    flex: 1;
+    cursor: pointer;
+  }
+
+  .rsvp__attend-option input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .rsvp__attend-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.6rem 0.4rem;
+    border: 0.5px solid rgba(107, 21, 37, 0.18);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: 0.58rem;
+    letter-spacing: 0.15em;
+    color: rgba(60, 48, 30, 0.5);
+    text-transform: uppercase;
+    transition: all 0.25s ease;
+    cursor: pointer;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  .rsvp__attend-option input:checked + .rsvp__attend-label {
+    background: rgba(107, 21, 37, 0.08);
+    border-color: rgba(107, 21, 37, 0.45);
+    color: rgba(107, 21, 37, 0.85);
+  }
+
+  .rsvp__attend-label:hover {
+    border-color: rgba(107, 21, 37, 0.35);
+    color: rgba(60, 48, 30, 0.75);
+  }
+
+  .rsvp__attend-dot {
+    width: 5px;
+    height: 5px;
+    border: 0.5px solid currentColor;
+    transform: rotate(45deg);
+    flex-shrink: 0;
+    transition: background 0.25s ease;
+  }
+
+  .rsvp__attend-option input:checked + .rsvp__attend-label .rsvp__attend-dot {
+    background: currentColor;
+  }
+
+  /* ─── Submit button ───────────────────────────────────── */
+  .rsvp__submit {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #faf8f4;
+    background: rgba(107, 21, 37, 0.85);
+    border: none;
+    padding: 0.9rem 1.5rem;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.3s ease, letter-spacing 0.3s ease;
+    margin-top: 0.4rem;
+  }
+
+  .rsvp__submit:hover:not(:disabled) {
+    background: rgba(107, 21, 37, 1);
+    letter-spacing: 0.38em;
+  }
+
+  .rsvp__submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* ─── Status messages ─────────────────────────────────── */
+  .rsvp__status {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-align: center;
+    padding: 0.5rem 0;
+    min-height: 1.2rem;
+  }
+
+  .rsvp__status--error { color: rgba(107, 21, 37, 0.75); }
+  .rsvp__status--loading { color: rgba(60, 48, 30, 0.4); }
+
+  /* ─── Thank you state ─────────────────────────────────── */
+  .rsvp__thankyou {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    animation: fadeInUp 0.6s ease forwards;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .rsvp__thankyou-diamond {
+    width: 36px;
+    height: 36px;
+    border: 0.5px solid rgba(107, 21, 37, 0.4);
+    transform: rotate(45deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .rsvp__thankyou-diamond svg {
+    transform: rotate(-45deg);
+    width: 16px;
+    height: 16px;
+    stroke: rgba(107, 21, 37, 0.7);
+    fill: none;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .rsvp__thankyou-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: 1.6rem;
+    color: #2c2418;
+    margin: 0;
+    text-align: center;
+  }
+
+  .rsvp__thankyou-msg {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    color: rgba(60, 48, 30, 0.5);
+    text-align: center;
+    line-height: 1.8;
+    text-transform: uppercase;
   }
 
   /* ─── Visible states ──────────────────────────────────── */
@@ -436,9 +547,8 @@ const styles = `
 
   /* ─── Reduced motion ──────────────────────────────────── */
   @media (prefers-reduced-motion: reduce) {
-    .rsvp__text, .rsvp__qr-wrap, .rsvp__scan-hint,
-    .rsvp__ring--1, .rsvp__ring--2,
-    .rsvp__qr-canvas, .rsvp__scan-line::after {
+    .rsvp__text, .rsvp__form-wrap,
+    .rsvp__ring--1, .rsvp__ring--2 {
       animation: none !important;
       opacity: 1 !important;
       transform: none !important;
@@ -447,30 +557,29 @@ const styles = `
   }
 `;
 
-export default function RSVP() {
-  const canvasRef = useRef(null);
-  const textRef = useRef(null);
-  const qrRef = useRef(null);
-  const hintRef = useRef(null);
-  const [, setQrReady] = useState(false);
+// Try to submit via a no-cors fetch (Google Forms accepts this)
+async function submitToGoogleForms(name, attend) {
+  const body = new URLSearchParams();
+  body.append(ENTRY_NAME, name);
+  body.append(ENTRY_ATTEND, attend);
 
-  // Generate QR onto canvas
-  useEffect(() => {
-    if (!canvasRef.current) return;
-    QRCode.toCanvas(
-      canvasRef.current,
-      FORM_URL,
-      {
-        width: 200,
-        margin: 1,
-        color: { dark: "#2c2418", light: "#faf8f4" },
-        errorCorrectionLevel: "H",
-      },
-      (err) => {
-        if (!err) setQrReady(true);
-      },
-    );
-  }, []);
+  await fetch(FORM_ACTION, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: body.toString(),
+  });
+  // no-cors always resolves (opaque response) — treat as success
+}
+
+export default function RSVP() {
+  const textRef = useRef(null);
+  const formWrapRef = useRef(null);
+
+  const [name, setName] = useState("");
+  const [attend, setAttend] = useState(""); // "yes" | "no"
+  const [status, setStatus] = useState("idle"); // idle | loading | success | error
+  const [errorMsg, setErrorMsg] = useState("");
 
   // Scroll reveal
   useEffect(() => {
@@ -484,11 +593,34 @@ export default function RSVP() {
         }),
       { threshold: 0.1 },
     );
-    [textRef.current, qrRef.current, hintRef.current]
+    [textRef.current, formWrapRef.current]
       .filter(Boolean)
       .forEach((el) => obs.observe(el));
     return () => obs.disconnect();
   }, []);
+
+  async function handleSubmit() {
+    if (!name.trim()) {
+      setErrorMsg("Please enter your name.");
+      return;
+    }
+    if (!attend) {
+      setErrorMsg("Please select your attendance.");
+      return;
+    }
+    setErrorMsg("");
+    setStatus("loading");
+    try {
+      await submitToGoogleForms(
+        name.trim(),
+        attend === "yes" ? YES_VALUE : NO_VALUE,
+      );
+      setStatus("success");
+    } catch {
+      setStatus("error");
+      setErrorMsg("Something went wrong. Please try again.");
+    }
+  }
 
   return (
     <>
@@ -515,13 +647,10 @@ export default function RSVP() {
               <i />
               <span />
             </div>
-
             <p className="rsvp__desc">
               Your presence would mean the world to us. Please let us know if
-              you'll be celebrating with Lei &amp; PJ on their special day by
-              scanning the QR code or clicking below.
+              you'll be celebrating with Lei &amp; PJ on their special day.
             </p>
-
             <div className="rsvp__deadline">
               <div className="rsvp__deadline-icon">
                 <svg viewBox="0 0 24 24">
@@ -536,64 +665,132 @@ export default function RSVP() {
                 <p className="rsvp__deadline-date">July 01, 2026</p>
               </div>
             </div>
-
-            <div className="rsvp__btn-wrap">
-              <a
-                href={FORM_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rsvp__btn"
-              >
-                RSVP Now
-              </a>
-            </div>
           </div>
 
-          {/* ── QR card ── */}
-          <div className="rsvp__qr-wrap" ref={qrRef}>
-            <div className="rsvp__qr-card">
+          {/* ── Form card ── */}
+          <div className="rsvp__form-wrap" ref={formWrapRef}>
+            <div className="rsvp__form-card">
               <span
-                className="rsvp__qr-corner rsvp__qr-corner--tl"
+                className="rsvp__form-corner rsvp__form-corner--tl"
                 aria-hidden="true"
               />
               <span
-                className="rsvp__qr-corner rsvp__qr-corner--tr"
+                className="rsvp__form-corner rsvp__form-corner--tr"
                 aria-hidden="true"
               />
               <span
-                className="rsvp__qr-corner rsvp__qr-corner--bl"
+                className="rsvp__form-corner rsvp__form-corner--bl"
                 aria-hidden="true"
               />
               <span
-                className="rsvp__qr-corner rsvp__qr-corner--br"
+                className="rsvp__form-corner rsvp__form-corner--br"
                 aria-hidden="true"
               />
 
-              <p className="rsvp__qr-eyebrow">Scan to RSVP</p>
-              <div className="rsvp__qr-divider">
+              <p className="rsvp__form-eyebrow">RSVP</p>
+              <div className="rsvp__form-divider">
                 <span />
                 <i />
                 <span />
               </div>
 
-              <canvas
-                ref={canvasRef}
-                className="rsvp__qr-canvas"
-                aria-label="QR code linking to RSVP form for Lei and PJ's wedding"
-              />
+              {status === "success" ? (
+                <div className="rsvp__thankyou">
+                  <div className="rsvp__thankyou-diamond">
+                    <svg viewBox="0 0 24 24">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </div>
+                  <p className="rsvp__thankyou-title">Thank You</p>
+                  <p className="rsvp__thankyou-msg">
+                    {attend === "yes"
+                      ? "We can't wait to celebrate\nwith you on our special day."
+                      : "We'll miss you, but thank you\nfor letting us know."}
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <p className="rsvp__form-names">Lei &amp; PJ</p>
+                  <p className="rsvp__form-sub">
+                    July 5, 2026 · Shepherd's Palace
+                  </p>
+                  <div className="rsvp__form-divider">
+                    <span />
+                    <i />
+                    <span />
+                  </div>
 
-              <div className="rsvp__qr-divider">
-                <span />
-                <i />
-                <span />
-              </div>
-              <p className="rsvp__qr-names">Lei &amp; PJ</p>
-              <p className="rsvp__qr-sub">July 5, 2026 · Shepherd's Palace</p>
-            </div>
+                  {/* Name */}
+                  <div className="rsvp__field">
+                    <label className="rsvp__label" htmlFor="rsvp-name">
+                      Your Name
+                    </label>
+                    <input
+                      id="rsvp-name"
+                      className="rsvp__input"
+                      type="text"
+                      placeholder="Full name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+                      disabled={status === "loading"}
+                    />
+                  </div>
 
-            <div className="rsvp__scan-hint" ref={hintRef}>
-              <span className="rsvp__scan-label">Scan with your camera</span>
-              <span className="rsvp__scan-line" aria-hidden="true" />
+                  {/* Attendance */}
+                  <div className="rsvp__field">
+                    <span className="rsvp__label">Will you attend?</span>
+                    <div className="rsvp__attend-group">
+                      <label className="rsvp__attend-option">
+                        <input
+                          type="radio"
+                          name="rsvp-attend"
+                          value="yes"
+                          checked={attend === "yes"}
+                          onChange={() => setAttend("yes")}
+                          disabled={status === "loading"}
+                        />
+                        <span className="rsvp__attend-label">
+                          <span className="rsvp__attend-dot" />
+                          Joyfully Accepts
+                        </span>
+                      </label>
+                      <label className="rsvp__attend-option">
+                        <input
+                          type="radio"
+                          name="rsvp-attend"
+                          value="no"
+                          checked={attend === "no"}
+                          onChange={() => setAttend("no")}
+                          disabled={status === "loading"}
+                        />
+                        <span className="rsvp__attend-label">
+                          <span className="rsvp__attend-dot" />
+                          Regretfully Declines
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Error / loading */}
+                  <div
+                    className={`rsvp__status ${status === "error" ? "rsvp__status--error" : "rsvp__status--loading"}`}
+                    role="alert"
+                    aria-live="polite"
+                  >
+                    {errorMsg || (status === "loading" ? "Sending…" : "")}
+                  </div>
+
+                  {/* Submit */}
+                  <button
+                    className="rsvp__submit"
+                    onClick={handleSubmit}
+                    disabled={status === "loading"}
+                  >
+                    {status === "loading" ? "Sending…" : "Send RSVP"}
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
