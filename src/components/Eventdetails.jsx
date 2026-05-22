@@ -344,7 +344,7 @@ const styles = `
 `;
 
 function getTimeLeft() {
-  const target = new Date("2026-07-05T15:00:00+08:00").getTime();
+  const target = new Date("2026-07-05T14:30:00+08:00").getTime();
   const now = Date.now();
   const diff = Math.max(target - now, 0);
   return {
@@ -426,7 +426,7 @@ export default function EventDetails() {
     },
     {
       label: "Time",
-      value: "3:00 PM Onwards",
+      value: "2:30 PM Onwards",
       sub: "Doors open at 2:30 PM",
       icon: (
         <svg viewBox="0 0 24 24">
