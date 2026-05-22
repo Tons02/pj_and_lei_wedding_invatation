@@ -774,9 +774,9 @@ export default function RSVP() {
                   letterSpacing: "0.05em",
                 }}
               >
-                With all that we have, we've been truly blessed. Your love,
-                prayer and presence are all that we request — but if you desire
-                to gift, a monetary gift is one we suggest.
+                Your love, prayers, and presence are all that we request — but
+                if you wish to give a gift, a monetary one would be greatly
+                appreciated.
               </p>
             </div>
           </div>

@@ -14,7 +14,7 @@ const stories = [
     year: "2026",
     title: "Journey",
     description:
-      "What started with shared passion in education became a beautiful story written by God. Two teachers, once seated as evaluators, are now standing side by side as partners for life. \n Join us as we turn our final vows into forever promises. 💍❤️",
+      "What started as a shared passion for education became a beautiful story written by God. Two teachers, once seated as evaluators, are now standing side by side as partners for life. Join us as we turn our final vows into forever promises. 💍❤️",
     image: storyImg2,
   },
 ];
