@@ -739,6 +739,46 @@ export default function RSVP() {
                 <p className="rsvp__deadline-date">June 15, 2026</p>
               </div>
             </div>
+            {/* After rsvp__deadline div */}
+            <div
+              className="rsvp__gift"
+              style={{
+                marginTop: "1.2rem",
+                padding: "0.9rem 1.2rem",
+                border: "0.5px solid rgba(210, 185, 140, 0.2)",
+                background: "rgba(255, 248, 235, 0.06)",
+                maxWidth: "320px",
+                borderRadius: "2px",
+                textAlign: "center",
+              }}
+            >
+              <p
+                style={{
+                  fontFamily: "'Cormorant Garamond', serif",
+                  fontStyle: "italic",
+                  fontSize: "1.2rem",
+                  color: "#f7efe0",
+                  margin: "0 0 0.4rem",
+                }}
+              >
+                Gift Ideas
+              </p>
+              <p
+                style={{
+                  fontFamily: "'Montserrat', sans-serif",
+                  fontWeight: 300,
+                  fontSize: "0.65rem",
+                  lineHeight: 1.9,
+                  color: "rgba(245, 235, 210, 0.5)",
+                  margin: 0,
+                  letterSpacing: "0.05em",
+                }}
+              >
+                With all that we have, we've been truly blessed. Your love,
+                prayer and presence are all that we request — but if you desire
+                to gift, a monetary gift is one we suggest.
+              </p>
+            </div>
           </div>
 
           {/* ── Right: Form card ── */}
