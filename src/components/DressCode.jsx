@@ -11,11 +11,12 @@ const PALETTE = [
 const ROLES = [
   { role: "Mother of the Bride & Groom", attire: "Blush Pink Formal Gown" },
   { role: "Father of the Groom", attire: "Barong Tagalog, Black Slacks" },
-  { role: "Maid of Honor", attire: "Wine Red Gown" },
+  { role: "Maid of Honor", attire: "Red Gown" },
   { role: "Best Man", attire: "Burgundy Suit" },
-  { role: "Ninang & Ninong", attire: "Beige / Wine Red Formal" },
-  { role: "Wedding Guests (Female)", attire: "Wine Red or Blush Pink Dress" },
-  { role: "Wedding Guests (Male)", attire: "Burgundy or Beige Smart Casual" },
+  { role: "Ninang & Ninong", attire: "Beige / Formal" },
+  { role: "Secondary Sponsor", attire: "Wine Red" },
+  { role: "Wedding Guests (Female)", attire: "Burgundy or Wine Red" },
+  { role: "Wedding Guests (Male)", attire: "Burgundy or Wine Red" },
   { role: "Flower Girl & Ring Bearer", attire: "Burgundy Red" },
 ];
 
@@ -178,7 +179,7 @@ const styles = `
   .dress__col-label {
     font-family: 'Montserrat', sans-serif;
     font-weight: 300;
-    font-size: 0.6rem;
+    font-size: 0.8rem;
     letter-spacing: 0.35em;
     color: rgba(107, 21, 37, 0.65);
     text-transform: uppercase;
@@ -230,7 +231,7 @@ const styles = `
   .dress__role-name {
     font-family: 'Montserrat', sans-serif;
     font-weight: 400;
-    font-size: clamp(0.7rem, 1.3vw, 0.78rem);
+    font-size: clamp(0.9rem, 1.3vw, 0.78rem);
     color: #2c2418;
     margin: 0 0 0.18rem;
   }
@@ -238,7 +239,7 @@ const styles = `
   .dress__role-attire {
     font-family: 'Montserrat', sans-serif;
     font-weight: 300;
-    font-size: clamp(0.65rem, 1.2vw, 0.72rem);
+    font-size: clamp(.8rem, 1.2vw, 0.72rem);
     color: rgba(60, 48, 30, 0.5);
     margin: 0;
     font-style: italic;
