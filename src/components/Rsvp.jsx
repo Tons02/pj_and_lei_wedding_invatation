@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import QRCode from "qrcode";
 
 // Google Form identifiers
 const FORM_ACTION =
@@ -380,6 +379,15 @@ const styles = `
     border-bottom-color: rgba(107, 21, 37, 0.55);
   }
 
+  /* ─── Honeypot (visually hidden from real users) ──────── */
+  .rsvp__honeypot {
+    position: absolute;
+    left: -9999px;
+    opacity: 0;
+    pointer-events: none;
+    tab-index: -1;
+  }
+
   /* ─── Attendance toggle ───────────────────────────────── */
   .rsvp__attend-group {
     display: flex;
@@ -479,7 +487,7 @@ const styles = `
     min-height: 1.2rem;
   }
 
-  .rsvp__status--error { color: rgba(107, 21, 37, 0.75); }
+  .rsvp__status--error   { color: rgba(107, 21, 37, 0.75); }
   .rsvp__status--loading { color: rgba(60, 48, 30, 0.4); }
 
   /* ─── Thank you state ─────────────────────────────────── */
@@ -537,6 +545,7 @@ const styles = `
     text-align: center;
     line-height: 1.8;
     text-transform: uppercase;
+    white-space: pre-line;
   }
 
   /* ─── Visible states ──────────────────────────────────── */
@@ -557,31 +566,40 @@ const styles = `
   }
 `;
 
-// Try to submit via a no-cors fetch (Google Forms accepts this)
-async function submitToGoogleForms(name, attend) {
-  const body = new URLSearchParams();
-  body.append(ENTRY_NAME, name);
-  body.append(ENTRY_ATTEND, attend);
+// ─── Submit via no-cors fetch (bypasses CORS preflight) ───────────────────
+function submitToGoogleForms(name, attend) {
+  const formData = new FormData();
+  formData.append(ENTRY_NAME, name);
+  formData.append(ENTRY_ATTEND, attend);
 
-  await fetch(FORM_ACTION, {
+  return fetch(FORM_ACTION, {
     method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: body.toString(),
+    mode: "no-cors", // Skips CORS preflight — Google Forms accepts this
+    body: formData,
   });
-  // no-cors always resolves (opaque response) — treat as success
 }
 
+// ─── RSVP Component ───────────────────────────────────────────────────────
 export default function RSVP() {
   const textRef = useRef(null);
   const formWrapRef = useRef(null);
 
+  // Form state
   const [name, setName] = useState("");
   const [attend, setAttend] = useState(""); // "yes" | "no"
   const [status, setStatus] = useState("idle"); // idle | loading | success | error
   const [errorMsg, setErrorMsg] = useState("");
 
-  // Scroll reveal
+  // ── Anti-spam state ──────────────────────────────────────────────────────
+  // 1. Honeypot: hidden field bots fill, humans don't
+  const [honeypot, setHoneypot] = useState("");
+  // 2. Cooldown: prevent rapid repeat submissions
+  const lastSubmitRef = useRef(0);
+  // 3. Max submissions per session
+  const submitCountRef = useRef(0);
+  const MAX_SUBMISSIONS = 3;
+
+  // ── Scroll reveal ────────────────────────────────────────────────────────
   useEffect(() => {
     const obs = new IntersectionObserver(
       (entries) =>
@@ -599,7 +617,25 @@ export default function RSVP() {
     return () => obs.disconnect();
   }, []);
 
+  // ── Submit handler ───────────────────────────────────────────────────────
   async function handleSubmit() {
+    // 1. Honeypot check — bot filled the hidden field
+    if (honeypot) return;
+
+    // 2. Session submission cap
+    if (submitCountRef.current >= MAX_SUBMISSIONS) {
+      setErrorMsg("Too many submissions. Please refresh and try again.");
+      return;
+    }
+
+    // 3. Cooldown: 8 seconds between submissions
+    const now = Date.now();
+    if (now - lastSubmitRef.current < 8000) {
+      setErrorMsg("Please wait a moment before submitting again.");
+      return;
+    }
+
+    // 4. Field validation
     if (!name.trim()) {
       setErrorMsg("Please enter your name.");
       return;
@@ -608,13 +644,18 @@ export default function RSVP() {
       setErrorMsg("Please select your attendance.");
       return;
     }
+
     setErrorMsg("");
     setStatus("loading");
+
     try {
+      // no-cors fetch always resolves (opaque response) — treat as success
       await submitToGoogleForms(
         name.trim(),
         attend === "yes" ? YES_VALUE : NO_VALUE,
       );
+      lastSubmitRef.current = Date.now();
+      submitCountRef.current += 1;
       setStatus("success");
     } catch {
       setStatus("error");
@@ -622,6 +663,7 @@ export default function RSVP() {
     }
   }
 
+  // ── Render ───────────────────────────────────────────────────────────────
   return (
     <>
       <style>{styles}</style>
@@ -634,7 +676,7 @@ export default function RSVP() {
         <div className="rsvp__ring rsvp__ring--2" aria-hidden="true" />
 
         <div className="rsvp__inner">
-          {/* ── Text ── */}
+          {/* ── Left: Text ── */}
           <div className="rsvp__text" ref={textRef}>
             <p className="rsvp__eyebrow">Will you join us?</p>
             <h2 className="rsvp__title">
@@ -667,9 +709,10 @@ export default function RSVP() {
             </div>
           </div>
 
-          {/* ── Form card ── */}
+          {/* ── Right: Form card ── */}
           <div className="rsvp__form-wrap" ref={formWrapRef}>
             <div className="rsvp__form-card">
+              {/* Corner brackets */}
               <span
                 className="rsvp__form-corner rsvp__form-corner--tl"
                 aria-hidden="true"
@@ -687,6 +730,17 @@ export default function RSVP() {
                 aria-hidden="true"
               />
 
+              {/* ── Honeypot: invisible to real users, bots fill it ── */}
+              <input
+                type="text"
+                value={honeypot}
+                onChange={(e) => setHoneypot(e.target.value)}
+                className="rsvp__honeypot"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+              />
+
               <p className="rsvp__form-eyebrow">RSVP</p>
               <div className="rsvp__form-divider">
                 <span />
@@ -695,6 +749,7 @@ export default function RSVP() {
               </div>
 
               {status === "success" ? (
+                /* ── Thank-you screen ── */
                 <div className="rsvp__thankyou">
                   <div className="rsvp__thankyou-diamond">
                     <svg viewBox="0 0 24 24">
@@ -709,6 +764,7 @@ export default function RSVP() {
                   </p>
                 </div>
               ) : (
+                /* ── Form fields ── */
                 <>
                   <p className="rsvp__form-names">Lei &amp; PJ</p>
                   <p className="rsvp__form-sub">
@@ -720,7 +776,7 @@ export default function RSVP() {
                     <span />
                   </div>
 
-                  {/* Name */}
+                  {/* Name field */}
                   <div className="rsvp__field">
                     <label className="rsvp__label" htmlFor="rsvp-name">
                       Your Name
@@ -734,10 +790,11 @@ export default function RSVP() {
                       onChange={(e) => setName(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
                       disabled={status === "loading"}
+                      autoComplete="name"
                     />
                   </div>
 
-                  {/* Attendance */}
+                  {/* Attendance toggle */}
                   <div className="rsvp__field">
                     <span className="rsvp__label">Will you attend?</span>
                     <div className="rsvp__attend-group">
@@ -772,9 +829,13 @@ export default function RSVP() {
                     </div>
                   </div>
 
-                  {/* Error / loading */}
+                  {/* Error / loading status */}
                   <div
-                    className={`rsvp__status ${status === "error" ? "rsvp__status--error" : "rsvp__status--loading"}`}
+                    className={`rsvp__status ${
+                      status === "error"
+                        ? "rsvp__status--error"
+                        : "rsvp__status--loading"
+                    }`}
                     role="alert"
                     aria-live="polite"
                   >
