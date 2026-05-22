@@ -344,7 +344,7 @@ const styles = `
 `;
 
 function getTimeLeft() {
-  const target = new Date("2026-06-15T14:00:00+08:00").getTime();
+  const target = new Date("2026-07-05T15:00:00+08:00").getTime();
   const now = Date.now();
   const diff = Math.max(target - now, 0);
   return {
@@ -413,7 +413,7 @@ export default function EventDetails() {
   const details = [
     {
       label: "Date",
-      value: "June 15, 2026",
+      value: "July 5, 2026",
       sub: "Sunday",
       icon: (
         <svg viewBox="0 0 24 24">

@@ -23,7 +23,6 @@ const ROLES = [
 const NOTES = [
   "Please avoid wearing white, off-white, or ivory",
   "Smart casual to formal attire is encouraged",
-  "Garden venue — comfortable footwear recommended",
 ];
 
 const styles = `

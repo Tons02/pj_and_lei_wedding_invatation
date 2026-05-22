@@ -168,14 +168,14 @@ const styles = `
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin-bottom: 2rem;
-    padding: 1rem 1.3rem;
-    border: 0.5px solid rgba(210, 185, 140, 0.15);
-    background: rgba(255, 248, 235, 0.04);
+    padding: 0.9rem 1.2rem;
+    border: 0.5px solid rgba(210, 185, 140, 0.2);
+    background: rgba(255, 248, 235, 0.06);
     max-width: 320px;
     width: 100%;
     margin-left: auto;
     margin-right: auto;
+    border-radius: 2px;
   }
 
   @media (min-width: 860px) {
@@ -226,7 +226,7 @@ const styles = `
     line-height: 1;
   }
 
-  /* ─── Inline Form Card ────────────────────────────────── */
+  /* ─── Form wrap ───────────────────────────────────────── */
   .rsvp__form-wrap {
     width: 100%;
     display: flex;
@@ -243,35 +243,20 @@ const styles = `
     }
   }
 
+  /* ─── Form card ───────────────────────────────────────── */
   .rsvp__form-card {
     position: relative;
-    background: #faf8f4;
-    padding: clamp(1.6rem, 5vw, 2.4rem);
+    background: #ffffff;
+    border: 1px solid #e8e0d4;
+    border-radius: 3px;
+    padding: clamp(1.8rem, 5vw, 2.4rem) clamp(1.6rem, 4vw, 2.2rem);
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    gap: 1.2rem;
+    gap: 0;
     width: 100%;
-    max-width: clamp(260px, 80vw, 340px);
-  }
-
-  /* Offset shadow */
-  .rsvp__form-card::before {
-    content: '';
-    position: absolute;
-    inset: -8px;
-    background: rgba(210, 185, 140, 0.1);
-    z-index: -1;
-    transform: translate(8px, 8px);
-  }
-
-  /* Border */
-  .rsvp__form-card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border: 0.5px solid rgba(210, 185, 140, 0.22);
-    pointer-events: none;
+    max-width: clamp(280px, 80vw, 360px);
+    box-shadow: 8px 8px 0 rgba(107, 21, 37, 0.08);
   }
 
   /* Corner brackets */
@@ -279,7 +264,7 @@ const styles = `
     position: absolute;
     width: 14px;
     height: 14px;
-    border-color: rgba(107, 21, 37, 0.5);
+    border-color: rgba(107, 21, 37, 0.45);
     border-style: solid;
   }
 
@@ -290,33 +275,35 @@ const styles = `
 
   .rsvp__form-eyebrow {
     font-family: 'Montserrat', sans-serif;
-    font-weight: 300;
-    font-size: clamp(0.52rem, 1.5vw, 0.58rem);
+    font-weight: 500;
+    font-size: 0.6rem;
     letter-spacing: 0.3em;
-    color: rgba(107, 21, 37, 0.6);
+    color: rgba(107, 21, 37, 0.55);
     text-transform: uppercase;
     text-align: center;
+    margin: 0 0 0.75rem;
   }
 
   .rsvp__form-names {
     font-family: 'Cormorant Garamond', serif;
     font-weight: 300;
     font-style: italic;
-    font-size: clamp(1.2rem, 4vw, 1.55rem);
+    font-size: clamp(1.5rem, 4vw, 1.8rem);
     color: #2c2418;
     text-align: center;
     line-height: 1.2;
-    margin: 0;
+    margin: 0 0 0.3rem;
   }
 
   .rsvp__form-sub {
     font-family: 'Montserrat', sans-serif;
     font-weight: 300;
-    font-size: clamp(0.5rem, 1.5vw, 0.58rem);
-    letter-spacing: 0.18em;
-    color: rgba(60, 48, 30, 0.45);
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    color: #a09080;
     text-align: center;
     text-transform: uppercase;
+    margin: 0 0 1.1rem;
   }
 
   .rsvp__form-divider {
@@ -324,62 +311,120 @@ const styles = `
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    margin-bottom: 1.4rem;
   }
 
   .rsvp__form-divider span {
     flex: 1;
-    height: 0.5px;
-    background: rgba(107, 21, 37, 0.13);
+    height: 1px;
+    background: #ede8e0;
   }
 
   .rsvp__form-divider i {
     width: 4px;
     height: 4px;
-    background: rgba(107, 21, 37, 0.22);
+    background: #c9b99a;
     transform: rotate(45deg);
     flex-shrink: 0;
+    display: block;
+  }
+
+  /* ─── Deadline strip inside card ─────────────────────── */
+  .rsvp__card-deadline {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: #faf5ee;
+    border: 1px solid #ede5d8;
+    border-radius: 3px;
+    padding: 0.65rem 0.9rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .rsvp__card-deadline-icon {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #c9b99a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+
+  .rsvp__card-deadline-icon svg {
+    transform: rotate(-45deg);
+    width: 13px;
+    height: 13px;
+    stroke: #9e7a58;
+    fill: none;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .rsvp__card-deadline-label {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: 0.55rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #b0906c;
+    margin: 0 0 2px;
+  }
+
+  .rsvp__card-deadline-date {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 300;
+    color: #2c2418;
+    margin: 0;
+    line-height: 1;
   }
 
   /* ─── Form fields ─────────────────────────────────────── */
   .rsvp__field {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: 0.45rem;
+    margin-bottom: 1.1rem;
   }
 
   .rsvp__label {
     font-family: 'Montserrat', sans-serif;
-    font-weight: 300;
-    font-size: 0.55rem;
-    letter-spacing: 0.25em;
-    color: rgba(60, 48, 30, 0.5);
+    font-weight: 500;
+    font-size: 0.6rem;
+    letter-spacing: 0.22em;
+    color: #8a7060;
     text-transform: uppercase;
   }
 
   .rsvp__input {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 1rem;
+    font-size: 1.05rem;
     font-weight: 300;
     color: #2c2418;
-    background: transparent;
-    border: none;
-    border-bottom: 0.5px solid rgba(107, 21, 37, 0.2);
-    padding: 0.4rem 0;
+    background: #faf8f5;
+    border: 1px solid #ddd6cc;
+    border-radius: 3px;
+    padding: 0.6rem 0.85rem;
     outline: none;
     width: 100%;
-    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, background 0.2s ease;
   }
 
   .rsvp__input::placeholder {
-    color: rgba(60, 48, 30, 0.25);
+    color: #bbb0a0;
     font-style: italic;
   }
 
   .rsvp__input:focus {
-    border-bottom-color: rgba(107, 21, 37, 0.55);
+    border-color: rgba(107, 21, 37, 0.55);
+    background: #ffffff;
   }
 
-  /* ─── Honeypot (visually hidden from real users) ──────── */
+  /* ─── Honeypot ────────────────────────────────────────── */
   .rsvp__honeypot {
     position: absolute;
     left: -9999px;
@@ -390,12 +435,12 @@ const styles = `
 
   /* ─── Attendance toggle ───────────────────────────────── */
   .rsvp__attend-group {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 0.6rem;
   }
 
   .rsvp__attend-option {
-    flex: 1;
     cursor: pointer;
   }
 
@@ -411,38 +456,40 @@ const styles = `
     align-items: center;
     justify-content: center;
     gap: 0.4rem;
-    padding: 0.6rem 0.4rem;
-    border: 0.5px solid rgba(107, 21, 37, 0.18);
+    padding: 0.7rem 0.4rem;
+    border: 1px solid #ddd6cc;
+    border-radius: 3px;
+    background: #faf8f5;
     font-family: 'Montserrat', sans-serif;
-    font-weight: 300;
-    font-size: 0.58rem;
-    letter-spacing: 0.15em;
-    color: rgba(60, 48, 30, 0.5);
+    font-weight: 400;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    color: #6b5848;
     text-transform: uppercase;
-    transition: all 0.25s ease;
+    transition: all 0.2s ease;
     cursor: pointer;
     text-align: center;
-    line-height: 1.3;
+    line-height: 1.4;
   }
 
   .rsvp__attend-option input:checked + .rsvp__attend-label {
-    background: rgba(107, 21, 37, 0.08);
-    border-color: rgba(107, 21, 37, 0.45);
-    color: rgba(107, 21, 37, 0.85);
+    background: #fdf0f2;
+    border-color: rgba(107, 21, 37, 0.5);
+    color: rgba(107, 21, 37, 0.9);
   }
 
   .rsvp__attend-label:hover {
     border-color: rgba(107, 21, 37, 0.35);
-    color: rgba(60, 48, 30, 0.75);
+    background: #fdf5f6;
   }
 
   .rsvp__attend-dot {
     width: 5px;
     height: 5px;
-    border: 0.5px solid currentColor;
+    border: 1px solid currentColor;
     transform: rotate(45deg);
     flex-shrink: 0;
-    transition: background 0.25s ease;
+    transition: background 0.2s ease;
   }
 
   .rsvp__attend-option input:checked + .rsvp__attend-label .rsvp__attend-dot {
@@ -452,18 +499,19 @@ const styles = `
   /* ─── Submit button ───────────────────────────────────── */
   .rsvp__submit {
     font-family: 'Montserrat', sans-serif;
-    font-weight: 400;
-    font-size: 0.6rem;
+    font-weight: 500;
+    font-size: 0.62rem;
     letter-spacing: 0.3em;
     text-transform: uppercase;
-    color: #faf8f4;
-    background: rgba(107, 21, 37, 0.85);
+    color: #ffffff;
+    background: rgba(107, 21, 37, 0.88);
     border: none;
+    border-radius: 3px;
     padding: 0.9rem 1.5rem;
     cursor: pointer;
     width: 100%;
-    transition: background 0.3s ease, letter-spacing 0.3s ease;
-    margin-top: 0.4rem;
+    transition: background 0.25s ease, letter-spacing 0.25s ease;
+    margin-top: 0.5rem;
   }
 
   .rsvp__submit:hover:not(:disabled) {
@@ -480,23 +528,23 @@ const styles = `
   .rsvp__status {
     font-family: 'Montserrat', sans-serif;
     font-weight: 300;
-    font-size: 0.6rem;
-    letter-spacing: 0.15em;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
     text-align: center;
-    padding: 0.5rem 0;
+    padding: 0.4rem 0;
     min-height: 1.2rem;
   }
 
-  .rsvp__status--error   { color: rgba(107, 21, 37, 0.75); }
-  .rsvp__status--loading { color: rgba(60, 48, 30, 0.4); }
+  .rsvp__status--error   { color: rgba(107, 21, 37, 0.8); }
+  .rsvp__status--loading { color: #a09080; }
 
   /* ─── Thank you state ─────────────────────────────────── */
   .rsvp__thankyou {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
-    padding: 1rem 0;
+    gap: 0.85rem;
+    padding: 0.75rem 0;
     animation: fadeInUp 0.6s ease forwards;
   }
 
@@ -505,23 +553,22 @@ const styles = `
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  .rsvp__thankyou-diamond {
-    width: 36px;
-    height: 36px;
-    border: 0.5px solid rgba(107, 21, 37, 0.4);
-    transform: rotate(45deg);
+  .rsvp__thankyou-circle {
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(107, 21, 37, 0.4);
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
-  .rsvp__thankyou-diamond svg {
-    transform: rotate(-45deg);
-    width: 16px;
-    height: 16px;
-    stroke: rgba(107, 21, 37, 0.7);
+  .rsvp__thankyou-circle svg {
+    width: 18px;
+    height: 18px;
+    stroke: rgba(107, 21, 37, 0.75);
     fill: none;
-    stroke-width: 1.5;
+    stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
   }
@@ -530,7 +577,7 @@ const styles = `
     font-family: 'Cormorant Garamond', serif;
     font-weight: 300;
     font-style: italic;
-    font-size: 1.6rem;
+    font-size: 1.8rem;
     color: #2c2418;
     margin: 0;
     text-align: center;
@@ -539,13 +586,14 @@ const styles = `
   .rsvp__thankyou-msg {
     font-family: 'Montserrat', sans-serif;
     font-weight: 300;
-    font-size: 0.62rem;
-    letter-spacing: 0.12em;
-    color: rgba(60, 48, 30, 0.5);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: #8a7060;
     text-align: center;
-    line-height: 1.8;
+    line-height: 1.9;
     text-transform: uppercase;
     white-space: pre-line;
+    margin: 0;
   }
 
   /* ─── Visible states ──────────────────────────────────── */
@@ -566,40 +614,31 @@ const styles = `
   }
 `;
 
-// ─── Submit via no-cors fetch (bypasses CORS preflight) ───────────────────
 function submitToGoogleForms(name, attend) {
   const formData = new FormData();
   formData.append(ENTRY_NAME, name);
   formData.append(ENTRY_ATTEND, attend);
-
   return fetch(FORM_ACTION, {
     method: "POST",
-    mode: "no-cors", // Skips CORS preflight — Google Forms accepts this
+    mode: "no-cors",
     body: formData,
   });
 }
 
-// ─── RSVP Component ───────────────────────────────────────────────────────
 export default function RSVP() {
   const textRef = useRef(null);
   const formWrapRef = useRef(null);
 
-  // Form state
   const [name, setName] = useState("");
-  const [attend, setAttend] = useState(""); // "yes" | "no"
-  const [status, setStatus] = useState("idle"); // idle | loading | success | error
+  const [attend, setAttend] = useState("");
+  const [status, setStatus] = useState("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
-  // ── Anti-spam state ──────────────────────────────────────────────────────
-  // 1. Honeypot: hidden field bots fill, humans don't
   const [honeypot, setHoneypot] = useState("");
-  // 2. Cooldown: prevent rapid repeat submissions
   const lastSubmitRef = useRef(0);
-  // 3. Max submissions per session
   const submitCountRef = useRef(0);
   const MAX_SUBMISSIONS = 3;
 
-  // ── Scroll reveal ────────────────────────────────────────────────────────
   useEffect(() => {
     const obs = new IntersectionObserver(
       (entries) =>
@@ -617,25 +656,20 @@ export default function RSVP() {
     return () => obs.disconnect();
   }, []);
 
-  // ── Submit handler ───────────────────────────────────────────────────────
   async function handleSubmit() {
-    // 1. Honeypot check — bot filled the hidden field
     if (honeypot) return;
 
-    // 2. Session submission cap
     if (submitCountRef.current >= MAX_SUBMISSIONS) {
       setErrorMsg("Too many submissions. Please refresh and try again.");
       return;
     }
 
-    // 3. Cooldown: 8 seconds between submissions
     const now = Date.now();
     if (now - lastSubmitRef.current < 8000) {
       setErrorMsg("Please wait a moment before submitting again.");
       return;
     }
 
-    // 4. Field validation
     if (!name.trim()) {
       setErrorMsg("Please enter your name.");
       return;
@@ -649,7 +683,6 @@ export default function RSVP() {
     setStatus("loading");
 
     try {
-      // no-cors fetch always resolves (opaque response) — treat as success
       await submitToGoogleForms(
         name.trim(),
         attend === "yes" ? YES_VALUE : NO_VALUE,
@@ -663,7 +696,6 @@ export default function RSVP() {
     }
   }
 
-  // ── Render ───────────────────────────────────────────────────────────────
   return (
     <>
       <style>{styles}</style>
@@ -704,7 +736,7 @@ export default function RSVP() {
               </div>
               <div>
                 <p className="rsvp__deadline-label">RSVP Deadline</p>
-                <p className="rsvp__deadline-date">July 01, 2026</p>
+                <p className="rsvp__deadline-date">June 15, 2026</p>
               </div>
             </div>
           </div>
@@ -712,7 +744,6 @@ export default function RSVP() {
           {/* ── Right: Form card ── */}
           <div className="rsvp__form-wrap" ref={formWrapRef}>
             <div className="rsvp__form-card">
-              {/* Corner brackets */}
               <span
                 className="rsvp__form-corner rsvp__form-corner--tl"
                 aria-hidden="true"
@@ -730,7 +761,7 @@ export default function RSVP() {
                 aria-hidden="true"
               />
 
-              {/* ── Honeypot: invisible to real users, bots fill it ── */}
+              {/* Honeypot */}
               <input
                 type="text"
                 value={honeypot}
@@ -742,16 +773,10 @@ export default function RSVP() {
               />
 
               <p className="rsvp__form-eyebrow">RSVP</p>
-              <div className="rsvp__form-divider">
-                <span />
-                <i />
-                <span />
-              </div>
 
               {status === "success" ? (
-                /* ── Thank-you screen ── */
                 <div className="rsvp__thankyou">
-                  <div className="rsvp__thankyou-diamond">
+                  <div className="rsvp__thankyou-circle">
                     <svg viewBox="0 0 24 24">
                       <polyline points="20 6 9 17 4 12" />
                     </svg>
@@ -764,16 +789,32 @@ export default function RSVP() {
                   </p>
                 </div>
               ) : (
-                /* ── Form fields ── */
                 <>
                   <p className="rsvp__form-names">Lei &amp; PJ</p>
                   <p className="rsvp__form-sub">
                     July 5, 2026 · Shepherd's Palace
                   </p>
+
                   <div className="rsvp__form-divider">
                     <span />
                     <i />
                     <span />
+                  </div>
+
+                  {/* Deadline inside card */}
+                  <div className="rsvp__card-deadline">
+                    <div className="rsvp__card-deadline-icon">
+                      <svg viewBox="0 0 24 24">
+                        <rect x="3" y="4" width="18" height="18" rx="2" />
+                        <line x1="16" y1="2" x2="16" y2="6" />
+                        <line x1="8" y1="2" x2="8" y2="6" />
+                        <line x1="3" y1="10" x2="21" y2="10" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="rsvp__card-deadline-label">RSVP Deadline</p>
+                      <p className="rsvp__card-deadline-date">June 15, 2026</p>
+                    </div>
                   </div>
 
                   {/* Name field */}
